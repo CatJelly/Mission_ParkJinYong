@@ -21,6 +21,9 @@ public class InstaMemberService {
     public Optional<InstaMember> findByUsername(String username) {
         return instaMemberRepository.findByUsername(username);
     }
+    public Optional<InstaMember> findById(Long id) {
+        return instaMemberRepository.findById(id);
+    }
 
     @Transactional
     // member : 현재 로그인한 회원

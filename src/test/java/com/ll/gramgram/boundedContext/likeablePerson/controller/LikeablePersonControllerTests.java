@@ -191,13 +191,13 @@ public class LikeablePersonControllerTests {
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/likeablePerson/delete/4"))
+                .perform(get("/likeablePerson/delete/2"))
                 .andDo(print());
 
         List<LikeablePerson> afterPeople = likeablePersonService.findByFromInstaMemberId(instaMember.getId());
         int afterSize = afterPeople.size();
 
-        assertThat(beforeSize).isEqualTo(afterSize);
+        assertThat(afterSize).isEqualTo(beforeSize - 1);
 
         // THEN
         resultActions
