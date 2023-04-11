@@ -3,19 +3,24 @@ package com.ll.gramgram.boundedContext.likeablePerson.controller;
 import com.ll.gramgram.base.rq.Rq;
 import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
+import com.ll.gramgram.boundedContext.instaMember.service.InstaMemberService;
 import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
 import com.ll.gramgram.boundedContext.likeablePerson.service.LikeablePersonService;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/likeablePerson")
@@ -23,7 +28,9 @@ import java.util.List;
 public class LikeablePersonController {
     private final Rq rq;
     private final LikeablePersonService likeablePersonService;
+    private InstaMemberService instaMemberService;
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/add")
     public String showAdd() {
         return "usr/likeablePerson/add";
@@ -58,5 +65,19 @@ public class LikeablePersonController {
         }
 
         return "usr/likeablePerson/list";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/delete/{id}")
+    public String delete(Model model, @PathVariable Long id) {
+        InstaMember instaMember = rq.getMember().getInstaMember();
+
+        if (instaMember != null) {
+            likeablePersonService.delete(instaMember.getId(), id);
+            List<LikeablePerson> likeablePeople = likeablePersonService.findByFromInstaMemberId(instaMember.getId());
+            model.addAttribute("likeablePeople", likeablePeople);
+        }
+
+        return rq.redirectWithMsg("/likeablePerson/list", "호감목록 삭제 완료");
     }
 }
