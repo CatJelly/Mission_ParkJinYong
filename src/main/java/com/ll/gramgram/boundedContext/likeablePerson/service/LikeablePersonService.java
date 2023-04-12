@@ -34,9 +34,10 @@ public class LikeablePersonService {
         List<LikeablePerson> fromLikeablePeople = member.getInstaMember().getFromLikeablePeople();
         if (member.getInstaMember().getUsername().equals(username)) {
             return RsData.of("F-1", "본인을 호감상대로 등록할 수 없습니다.");
-        }
-        else if (fromLikeablePeople.stream().filter(p -> p.getToInstaMemberUsername().equals(username)).count() != 0) { // 동일한 아이디를 가진 회원을 호감표시 하는 경우
+        } else if (fromLikeablePeople.stream().filter(p -> p.getToInstaMemberUsername().equals(username)).count() != 0) { // 동일한 아이디를 가진 회원을 호감표시 하는 경우
             return RsData.of("F-2", "중복으로 호감상대로 등록할 수 없습니다.");
+        } else if (member.getInstaMember().getFromLikeablePeople().size() == 10) {
+            return RsData.of("F-3", "11명 이상을 호감상대로 등록할 수 없습니다.");
         }
 
         InstaMember fromInstaMember = member.getInstaMember();

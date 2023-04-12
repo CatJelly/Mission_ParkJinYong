@@ -249,4 +249,26 @@ public class LikeablePersonControllerTests {
         ;
     }
 
+    @Test
+    @DisplayName("호감등록(user4가 11명째 인스타회원을 등록 시도하지만 실패)")
+    @WithUserDetails("user4")
+    void t010() throws Exception {
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(post("/likeablePerson/add")
+                        .with(csrf()) // CSRF 키 생성
+                        .param("username", "insta_user21")
+                        .param("attractiveTypeCode", "2")
+                )
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(LikeablePersonController.class))
+                .andExpect(handler().methodName("add"))
+                .andExpect(status().is4xxClientError())
+        ;
+    }
+
+
 }
