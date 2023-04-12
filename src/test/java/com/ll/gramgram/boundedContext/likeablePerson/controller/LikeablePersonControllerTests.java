@@ -228,4 +228,25 @@ public class LikeablePersonControllerTests {
         assertThat(likeablePersonService.findById(1L).isPresent()).isEqualTo(true);
     }
 
+    @Test
+    @DisplayName("호감등록(user3가 insta_user4를 두번 등록)")
+    @WithUserDetails("user3")
+    void t009() throws Exception {
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(post("/likeablePerson/add")
+                        .with(csrf()) // CSRF 키 생성
+                        .param("username", "insta_user4")
+                        .param("attractiveTypeCode", "1")
+                )
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(LikeablePersonController.class))
+                .andExpect(handler().methodName("add"))
+                .andExpect(status().is4xxClientError())
+        ;
+    }
+
 }

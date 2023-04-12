@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.swing.text.html.Option;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,8 +31,12 @@ public class LikeablePersonService {
             return RsData.of("F-2", "먼저 본인의 인스타그램 아이디를 입력해야 합니다.");
         }
 
+        List<LikeablePerson> fromLikeablePeople = member.getInstaMember().getFromLikeablePeople();
         if (member.getInstaMember().getUsername().equals(username)) {
             return RsData.of("F-1", "본인을 호감상대로 등록할 수 없습니다.");
+        }
+        else if (fromLikeablePeople.stream().filter(p -> p.getToInstaMemberUsername().equals(username)).count() != 0) { // 동일한 아이디를 가진 회원을 호감표시 하는 경우
+            return RsData.of("F-2", "중복으로 호감상대로 등록할 수 없습니다.");
         }
 
         InstaMember fromInstaMember = member.getInstaMember();
