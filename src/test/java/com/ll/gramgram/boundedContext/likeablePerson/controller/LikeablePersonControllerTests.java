@@ -229,7 +229,7 @@ public class LikeablePersonControllerTests {
     }
 
     @Test
-    @DisplayName("호감등록(user3가 insta_user4를 두번 등록)")
+    @DisplayName("호감등록(user3이 insta_user4를 두번 등록)")
     @WithUserDetails("user3")
     void t009() throws Exception {
         // WHEN
@@ -270,5 +270,33 @@ public class LikeablePersonControllerTests {
         ;
     }
 
+    @Test
+    @DisplayName("호감등록(user3이 insta_user4를 다른 호감코드로 등록하는 경우)")
+    @WithUserDetails("user3")
+    void t011() throws Exception {
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(post("/likeablePerson/add")
+                        .with(csrf()) // CSRF 키 생성
+                        .param("username", "insta_user4")
+                        .param("attractiveTypeCode", "2")
+                )
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(LikeablePersonController.class))
+                .andExpect(handler().methodName("add"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("/likeablePerson/list**"))
+        ;
+        InstaMember user3 = instaMemberService.findByUsername("insta_user3").orElse(null);
+        assertThat(user3.getFromLikeablePeople()
+                        .get(1)
+                        .getAttractiveTypeCode())
+                .isEqualTo(2);
+
+        assertThat(user3.getFromLikeablePeople().size()).isEqualTo(2);
+    }
 
 }
