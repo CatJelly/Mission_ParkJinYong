@@ -1,5 +1,6 @@
 package com.ll.gramgram.boundedContext.likeablePerson.service;
 
+import com.ll.gramgram.base.appConfig.AppConfig;
 import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import com.ll.gramgram.boundedContext.instaMember.service.InstaMemberService;
@@ -31,6 +32,11 @@ public class LikeablePersonService {
             return RsData.of("F-2", "먼저 본인의 인스타그램 아이디를 입력해야 합니다.");
         }
 
+        // 본인 호감 표시 제한
+        if (member.getInstaMember().getUsername().equals(username)) {
+            return RsData.of("F-1", "본인을 호감상대로 등록할 수 없습니다.");
+        }
+
         // 중복 회원 호감을 체크하기 위한 from 리스트
         List<LikeablePerson> fromLikeablePeople = member.getInstaMember().getFromLikeablePeople();
         // 회원 아이디가 동일한 유저
@@ -38,13 +44,9 @@ public class LikeablePersonService {
                 .filter(p -> p.getToInstaMemberUsername().equals(username))
                 .findFirst().orElse(null);
 
-        // 본인 호감 표시 제한
-        if (member.getInstaMember().getUsername().equals(username)) {
-            return RsData.of("F-1", "본인을 호감상대로 등록할 수 없습니다.");
-        }
         // 호감표시 10명 제한
-        else if (fromLikeablePeople.size() == 10) {
-            return RsData.of("F-2", "11명 이상을 호감상대로 등록할 수 없습니다.");
+        if (fromLikeablePeople.size() == AppConfig.getLikeablePersonFromMax()) {
+            return RsData.of("F-2", "%d명보다 많이 호감상대를 등록할 수 없습니다.".formatted(AppConfig.getLikeablePersonFromMax()));
         }
         // 중복 회원 호감 표시인 경우
         else if (duplicate != null) {
@@ -52,20 +54,25 @@ public class LikeablePersonService {
             if (duplicate.getAttractiveTypeCode() ==  attractiveTypeCode) {
                 return RsData.of("F-3", "중복으로 호감상대로 등록할 수 없습니다.");
             }
+            String preAttractiveStr = LikeablePerson.getAttractiveTypeDisplayName(duplicate.getAttractiveTypeCode());
+            String newAttractiveStr = LikeablePerson.getAttractiveTypeDisplayName(attractiveTypeCode);
             duplicate.setAttractiveTypeCode(attractiveTypeCode);
+            likeablePersonRepository.save(duplicate); // 저장
+            return RsData.of(
+                    "S-2",
+                    "%s에 대한 호감사유를 %s에서 %s로 변경합니다."
+                            .formatted(username, preAttractiveStr, newAttractiveStr),
+                    duplicate
+            );
         }
 
-
+        // 새로운 회원을 호감 등록하는 경우
         InstaMember fromInstaMember = member.getInstaMember();
         InstaMember toInstaMember = instaMemberService.findByUsernameOrCreate(username).getData();
 
-        LikeablePerson likeablePerson = duplicate;
-        if (duplicate == null) {
-            likeablePerson = create(fromInstaMember, toInstaMember, attractiveTypeCode);
-            fromInstaMember.addFromLikeablePerson(likeablePerson);
-            toInstaMember.addToLikeablePerson(likeablePerson);
-        }
-
+        LikeablePerson likeablePerson = create(fromInstaMember, toInstaMember, attractiveTypeCode);
+        fromInstaMember.addFromLikeablePerson(likeablePerson);
+        toInstaMember.addToLikeablePerson(likeablePerson);;
         likeablePersonRepository.save(likeablePerson); // 저장
 
         return RsData.of("S-1", "입력하신 인스타유저(%s)를 호감상대로 등록되었습니다.".formatted(username), likeablePerson);

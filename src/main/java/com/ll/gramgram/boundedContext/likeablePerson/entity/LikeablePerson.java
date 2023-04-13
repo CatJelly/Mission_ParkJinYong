@@ -40,8 +40,14 @@ public class LikeablePerson {
     public void setAttractiveTypeCode(int attractiveTypeCode) {
         this.attractiveTypeCode = attractiveTypeCode;
     }
-
     public String getAttractiveTypeDisplayName() {
+        return switch (attractiveTypeCode) {
+            case 1 -> "외모";
+            case 2 -> "성격";
+            default -> "능력";
+        };
+    }
+    public static String getAttractiveTypeDisplayName(int attractiveTypeCode) {
         return switch (attractiveTypeCode) {
             case 1 -> "외모";
             case 2 -> "성격";
