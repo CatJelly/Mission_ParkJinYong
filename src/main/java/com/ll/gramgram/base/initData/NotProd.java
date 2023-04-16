@@ -24,6 +24,7 @@ public class NotProd {
             Member memberUser2 = memberService.join("user2", "1234").getData();
             Member memberUser3 = memberService.join("user3", "1234").getData();
             Member memberUser4 = memberService.join("user4", "1234").getData();
+            Member memberUser5 = memberService.join("user5", "1234").getData();
 
             Member memberUser5ByKakao = memberService.whenSocialLogin("KAKAO", "KAKAO__2731659195").getData();
             Member memberUser6ByGoogle = memberService.whenSocialLogin("GOOGLE", "GOOGLE__109725510932460602319").getData();
@@ -31,12 +32,13 @@ public class NotProd {
             instaMemberService.connect(memberUser2, "insta_user2", "M");
             instaMemberService.connect(memberUser3, "insta_user3", "W");
             instaMemberService.connect(memberUser4, "insta_user4", "M");
+            instaMemberService.connect(memberUser5, "insta_user5", "W");
 
             likeablePersonService.like(memberUser3, "insta_user4", 1);
             likeablePersonService.like(memberUser3, "insta_user100", 2);
 
-            for(int i=11; i<=20; i++) {
-                likeablePersonService.like(memberUser4, "insta_user%d".formatted(i), 2);
+            for(int i=101; i<=110; i++) {
+                likeablePersonService.like(memberUser5, "insta_user%d".formatted(i), 2);
             }
         };
     }

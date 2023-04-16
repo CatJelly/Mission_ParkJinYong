@@ -67,7 +67,7 @@ public class LikeablePersonController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @DeleteMapping ("/{id}")
+    @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id) {
         LikeablePerson likeablePerson = likeablePersonService.findById(id).orElse(null);
 

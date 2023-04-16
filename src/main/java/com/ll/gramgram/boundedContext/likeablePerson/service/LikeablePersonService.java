@@ -88,16 +88,6 @@ public class LikeablePersonService {
                 .attractiveTypeCode(attractiveTypeCode) // 1=외모, 2=능력, 3=성격
                 .build();
     }
-    public LikeablePerson modify(LikeablePerson likeablePerson, InstaMember fromInstaMember, InstaMember toInstaMember, int attractiveTypeCode) {
-        return likeablePerson
-                .toBuilder()
-                .fromInstaMember(fromInstaMember) // 호감을 표시하는 사람의 인스타 멤버
-                .fromInstaMemberUsername(fromInstaMember.getUsername()) // 중요하지 않음
-                .toInstaMember(toInstaMember) // 호감을 받는 사람의 인스타 멤버
-                .toInstaMemberUsername(toInstaMember.getUsername()) // 중요하지 않음
-                .attractiveTypeCode(attractiveTypeCode) // 1=외모, 2=능력, 3=성격
-                .build();
-    }
 
     public Optional<LikeablePerson> findById(Long id) {
         return likeablePersonRepository.findById(id);
