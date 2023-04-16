@@ -1,8 +1,10 @@
 package com.ll.gramgram.boundedContext.instaMember.entity;
 
+import com.ll.gramgram.base.baseEntity.BaseEntity;
 import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.data.annotation.CreatedDate;
@@ -15,21 +17,12 @@ import java.util.List;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
-@ToString
 @Entity
 @Getter
-public class InstaMember {
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private Long id;
-    @CreatedDate
-    private LocalDateTime createDate;
-    @LastModifiedDate
-    private LocalDateTime modifyDate;
+@NoArgsConstructor
+@SuperBuilder
+@ToString(callSuper = true)
+public class InstaMember extends BaseEntity {
     @Column(unique = true)
     private String username;
     @Setter
@@ -52,5 +45,11 @@ public class InstaMember {
     }
     public void addToLikeablePerson(LikeablePerson likeablePerson) {
         toLikeablePeople.add(0, likeablePerson);
+    }
+    public void removeFromLikeablePerson(LikeablePerson likeablePerson) {
+        fromLikeablePeople.removeIf(e -> e.equals(likeablePerson));
+    }
+    public void removeToLikeablePerson(LikeablePerson likeablePerson) {
+        toLikeablePeople.removeIf(e -> e.equals(likeablePerson));
     }
 }
