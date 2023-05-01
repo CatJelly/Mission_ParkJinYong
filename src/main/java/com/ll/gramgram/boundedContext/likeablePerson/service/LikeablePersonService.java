@@ -15,7 +15,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -37,19 +36,9 @@ public class LikeablePersonService {
         if (canLikeRsData.getResultCode().equals("S-2")) return modifyAttractive(actor, username, attractiveTypeCode);
 
         InstaMember fromInstaMember = actor.getInstaMember();
-
         InstaMember toInstaMember = instaMemberService.findByUsernameOrCreate(username).getData();
 
-        LikeablePerson likeablePerson = create(fromInstaMember, toInstaMember, attractiveTypeCode);
-        fromInstaMember.addFromLikeablePerson(likeablePerson);
-        toInstaMember.addToLikeablePerson(likeablePerson);;
-        likeablePersonRepository.save(likeablePerson); // 저장
-
-        return RsData.of("S-1", "입력하신 인스타유저(%s)를 호감상대로 등록되었습니다.".formatted(username), likeablePerson);
-    }
-
-    public LikeablePerson create(InstaMember fromInstaMember, InstaMember toInstaMember, int attractiveTypeCode) {
-        return LikeablePerson
+        LikeablePerson likeablePerson = LikeablePerson
                 .builder()
                 .fromInstaMember(fromInstaMember) // 호감을 표시하는 사람의 인스타 멤버
                 .fromInstaMemberUsername(actor.getInstaMember().getUsername()) // 중요하지 않음
