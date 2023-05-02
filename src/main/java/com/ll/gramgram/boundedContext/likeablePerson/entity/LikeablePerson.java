@@ -41,7 +41,10 @@ public class LikeablePerson extends BaseEntity {
 
     // 초 단위에서 올림 해주세요.
     public String getModifyUnlockDateRemainStrHuman() {
-        return "2시간 16분";
+        int hour = this.modifyUnlockDate.getHour();
+        int minute = this.modifyUnlockDate.getMinute();
+        // int second = this.modifyUnlockDate.getSecond();
+        return "%d시 %d분".formatted(hour, minute);
     }
 
     public RsData updateAttractionTypeCode(int attractiveTypeCode) {
