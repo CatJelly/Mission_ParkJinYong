@@ -18,7 +18,6 @@ import java.util.List;
 @ToString(callSuper = true)
 public class InstaMember extends InstaMemberBase {
     @Setter
-
     @Column(unique = true)
     private String username;
 
