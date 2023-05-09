@@ -74,15 +74,10 @@ public class LikeablePersonController {
     public String cancel(@PathVariable Long id) {
         LikeablePerson likeablePerson = likeablePersonService.findById(id).orElse(null);
 
-        RsData canDeleteRsData = likeablePersonService.canCancel(rq.getMember(), likeablePerson);
-
+        RsData canDeleteRsData = likeablePersonService.cancel(rq.getMember(), likeablePerson);
         if (canDeleteRsData.isFail()) return rq.historyBack(canDeleteRsData);
 
-        RsData deleteRsData = likeablePersonService.cancel(likeablePerson);
-
-        if (deleteRsData.isFail()) return rq.historyBack(deleteRsData);
-
-        return rq.redirectWithMsg("/usr/likeablePerson/list", deleteRsData);
+        return rq.redirectWithMsg("/usr/likeablePerson/list", canDeleteRsData);
     }
 
     @PreAuthorize("isAuthenticated()")

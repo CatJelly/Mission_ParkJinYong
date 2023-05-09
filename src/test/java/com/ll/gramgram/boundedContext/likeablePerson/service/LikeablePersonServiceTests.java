@@ -3,6 +3,7 @@ package com.ll.gramgram.boundedContext.likeablePerson.service;
 
 import com.ll.gramgram.TestUt;
 import com.ll.gramgram.base.appConfig.AppConfig;
+import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
 import com.ll.gramgram.boundedContext.likeablePerson.repository.LikeablePersonRepository;
@@ -258,14 +259,102 @@ public class LikeablePersonServiceTests {
         // 호감표시를 생성하면 쿨타임이 지정되기 때문에, 그래서 바로 수정이 안된다.
         // 그래서 강제로 쿨타임이 지난것으로 만든다.
         // 테스트를 위해서 억지로 값을 넣는다.
-        TestUt.setFieldValue(likeablePersonToBts, "modifyUnlockDate", LocalDateTime.now().minusSeconds(-1));
+        TestUt.setFieldValue(likeablePersonToBts, "modifyUnlockDate", LocalDateTime.now().minusSeconds(1));
 
         // 수정을 하면 쿨타임이 갱신된다.
-        likeablePersonService.modifyAttractive(memberUser3, likeablePersonToBts, 1);
-
+        RsData temp = likeablePersonService.modifyAttractive(memberUser3, likeablePersonToBts, 1);
+        System.out.println("TEST8  " + temp.getMsg());
+        System.out.println("TEST8 " + likeablePersonToBts.getModifyUnlockDate());
         // 갱신 되었는지 확인
         assertThat(
                 likeablePersonToBts.getModifyUnlockDate().isAfter(coolTime)
         ).isTrue();
+    }
+
+    @Test
+    @DisplayName("호감사유를 변경한 시간이 올바르게 나온다")
+    void t009() throws Exception {
+        // 현재시점 기준에서 쿨타임이 다 차는 시간을 구한다.(미래)
+        LocalDateTime coolTime = AppConfig.genLikeablePersonModifyUnlockDate();
+
+        Member memberUser3 = memberService.findByUsername("user3").orElseThrow();
+        // 호감표시를 생성한다.
+        LikeablePerson likeablePerson = likeablePersonService.like(memberUser3, "test", 3).getData();
+
+        String resultStr = likeablePerson.getModifyUnlockDateRemainStrHuman();
+
+        assertThat(
+                resultStr.equals(String.format("%d시 %d분".formatted(coolTime.getHour(), coolTime.getMinute())))
+        ).isTrue();
+    }
+
+    @Test
+    @DisplayName("호감표시를 한 후 쿨타임 시간 이전 호감취소를 시도하면 실패")
+    void t010() throws Exception {
+        // 현재시점 기준에서 쿨타임이 다 차는 시간을 구한다.(미래)
+        LocalDateTime coolTime = AppConfig.genLikeablePersonModifyUnlockDate();
+
+        Member memberUser3 = memberService.findByUsername("user3").orElseThrow();
+        // 호감표시를 생성한다.
+        // // 호감표시를 생성하면 쿨타임이 미래로 지정된다.
+        LikeablePerson likeablePerson = likeablePersonService.like(memberUser3, "test_insta1", 3).getData();
+
+        RsData rsData = likeablePersonService.cancel(memberUser3, likeablePerson);
+        assertThat(rsData.isFail()).isTrue();
+    }
+
+    @Test
+    @DisplayName("호감표시를 한 후 쿨타임 시간 이후 호감취소를 시도하면 성공")
+    void t011() throws Exception {
+        // 현재시점 기준에서 쿨타임이 다 차는 시간을 구한다.(미래)
+        LocalDateTime coolTime = AppConfig.genLikeablePersonModifyUnlockDate();
+
+        Member memberUser3 = memberService.findByUsername("user3").orElseThrow();
+        // 호감표시를 생성한다.
+        // // 호감표시를 생성하면 쿨타임이 미래로 지정된다.
+        LikeablePerson likeablePerson = likeablePersonService.like(memberUser3, "test_insta2", 3).getData();
+
+        // 강제로 쿨타임 시간 이후인 상황으로 가정
+        TestUt.setFieldValue(likeablePerson, "modifyUnlockDate", LocalDateTime.now().minusSeconds(1));
+
+        System.out.println(likeablePerson.getModifyUnlockDate());
+
+        RsData rsData = likeablePersonService.cancel(memberUser3, likeablePerson);
+
+        System.out.println(rsData.getMsg());
+        assertThat(rsData.isSuccess()).isTrue();
+    }
+
+    @Test
+    @DisplayName("호감표시를 한 후 쿨타임 시간 이전 호감사유 변경을 시도하면 실패")
+    void t012() throws Exception {
+        // 현재시점 기준에서 쿨타임이 다 차는 시간을 구한다.(미래)
+        LocalDateTime coolTime = AppConfig.genLikeablePersonModifyUnlockDate();
+
+        Member memberUser3 = memberService.findByUsername("user3").orElseThrow();
+        // 호감표시를 생성한다.
+        // // 호감표시를 생성하면 쿨타임이 미래로 지정된다.
+        LikeablePerson likeablePerson = likeablePersonService.like(memberUser3, "test_insta3", 3).getData();
+
+        RsData rsData = likeablePersonService.modifyAttractive(memberUser3, likeablePerson, 1);
+        assertThat(rsData.isFail()).isTrue();
+    }
+
+    @Test
+    @DisplayName("호감표시를 한 후 쿨타임 시간 이후 호감사유 변경을 시도하면 성공")
+    void t013() throws Exception {
+        // 현재시점 기준에서 쿨타임이 다 차는 시간을 구한다.(미래)
+        LocalDateTime coolTime = AppConfig.genLikeablePersonModifyUnlockDate();
+
+        Member memberUser3 = memberService.findByUsername("user3").orElseThrow();
+        // 호감표시를 생성한다.
+        // // 호감표시를 생성하면 쿨타임이 미래로 지정된다.
+        LikeablePerson likeablePerson = likeablePersonService.like(memberUser3, "test_insta4", 3).getData();
+
+        // 강제로 쿨타임 시간 이후인 상황으로 가정
+        TestUt.setFieldValue(likeablePerson, "modifyUnlockDate", LocalDateTime.now().minusSeconds(1));
+
+        RsData rsData = likeablePersonService.modifyAttractive(memberUser3, likeablePerson, 1);
+        assertThat(rsData.isSuccess()).isTrue();
     }
 }

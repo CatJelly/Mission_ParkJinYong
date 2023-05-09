@@ -70,7 +70,12 @@ public class LikeablePersonService {
     }
 
     @Transactional
-    public RsData cancel(LikeablePerson likeablePerson) {
+    public RsData cancel(Member actor, LikeablePerson likeablePerson) {
+        RsData canDeleteRsData = canCancel(actor, likeablePerson);
+
+        if (canDeleteRsData.isFail())
+            return canDeleteRsData;
+
         publisher.publishEvent(new EventBeforeCancelLike(this, likeablePerson));
 
         // 너가 생성한 좋아요가 사라졌어.
@@ -86,6 +91,7 @@ public class LikeablePersonService {
     }
 
     public RsData canCancel(Member actor, LikeablePerson likeablePerson) {
+        // 이미 삭제된 경우
         if (likeablePerson == null) return RsData.of("F-1", "이미 삭제되었습니다.");
 
         // 수행자의 인스타계정 번호
@@ -93,8 +99,15 @@ public class LikeablePersonService {
         // 삭제 대상의 작성자(호감표시한 사람)의 인스타계정 번호
         long fromInstaMemberId = likeablePerson.getFromInstaMember().getId();
 
+        // 삭제 권한 확인
         if (actorInstaMemberId != fromInstaMemberId)
             return RsData.of("F-2", "권한이 없습니다.");
+
+        // 삭제 쿨타임 확인
+        if (!likeablePerson.isModifyUnlocked()) {
+            String timeLimit = likeablePerson.getModifyUnlockDateRemainStrHuman();
+            return RsData.of("F-3", "%s까지 삭제 쿨타임 입니다.".formatted(timeLimit));
+        }
 
         return RsData.of("S-1", "삭제가능합니다.");
     }
@@ -166,7 +179,7 @@ public class LikeablePersonService {
         String username = likeablePerson.getToInstaMember().getUsername();
 
         modifyAttractionTypeCode(likeablePerson, attractiveTypeCode);
-
+        likeablePerson.setModifyUnlockDate(AppConfig.genLikeablePersonModifyUnlockDate());
         String newAttractiveTypeDisplayName = likeablePerson.getAttractiveTypeDisplayName();
 
         return RsData.of("S-3", "%s님에 대한 호감사유를 %s에서 %s(으)로 변경합니다.".formatted(username, oldAttractiveTypeDisplayName, newAttractiveTypeDisplayName), likeablePerson);
@@ -209,6 +222,11 @@ public class LikeablePersonService {
             return RsData.of("F-2", "해당 호감표시를 취소할 권한이 없습니다.");
         }
 
+        // 삭제 쿨타임 확인
+        if (!likeablePerson.isModifyUnlocked()) {
+            String timeLimit = likeablePerson.getModifyUnlockDateRemainStrHuman();
+            return RsData.of("F-3", "%s까지 삭제 쿨타임 입니다.".formatted(timeLimit));
+        }
 
         return RsData.of("S-1", "호감표시취소가 가능합니다.");
     }
