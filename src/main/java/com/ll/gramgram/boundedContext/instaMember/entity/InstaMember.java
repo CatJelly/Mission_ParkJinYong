@@ -1,6 +1,5 @@
 package com.ll.gramgram.boundedContext.instaMember.entity;
 
-import com.ll.gramgram.base.baseEntity.BaseEntity;
 import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
 import jakarta.persistence.*;
 import lombok.*;
@@ -36,6 +35,7 @@ public class InstaMember extends InstaMemberBase {
 
     @OneToMany(mappedBy = "toInstaMember", cascade = {CascadeType.ALL})
     @OrderBy("id desc") // 정렬
+    @LazyCollection(LazyCollectionOption.EXTRA)
     @Builder.Default // @Builder 가 있으면 ` = new ArrayList<>();` 가 작동하지 않는다. 그래서 이걸 붙여야 한다.
     private List<LikeablePerson> toLikeablePeople = new ArrayList<>();
 
@@ -106,5 +106,4 @@ public class InstaMember extends InstaMemberBase {
                 .likesCountByGenderWomanAndAttractiveTypeCode3(likesCountByGenderWomanAndAttractiveTypeCode3)
                 .build();
     }
-
 }

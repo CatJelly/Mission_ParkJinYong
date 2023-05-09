@@ -26,7 +26,6 @@ public abstract class BaseEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
-
     @CreatedDate
     private LocalDateTime createDate;
     @LastModifiedDate

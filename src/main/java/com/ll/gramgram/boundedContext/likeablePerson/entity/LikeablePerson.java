@@ -9,7 +9,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
@@ -21,7 +20,6 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @ToString(callSuper = true)
 public class LikeablePerson extends BaseEntity {
-    @Setter
     private LocalDateTime modifyUnlockDate;
 
     @ManyToOne
@@ -34,7 +32,6 @@ public class LikeablePerson extends BaseEntity {
     private InstaMember toInstaMember; // 호감을 받은 사람(인스타 멤버)
     private String toInstaMemberUsername; // 혹시 몰라서 기록
 
-
     private int attractiveTypeCode; // 매력포인트(1=외모, 2=성격, 3=능력)
 
     public boolean isModifyUnlocked() {
@@ -43,10 +40,7 @@ public class LikeablePerson extends BaseEntity {
 
     // 초 단위에서 올림 해주세요.
     public String getModifyUnlockDateRemainStrHuman() {
-        int hour = this.modifyUnlockDate.getHour();
-        int minute = this.modifyUnlockDate.getMinute();
-        // int second = this.modifyUnlockDate.getSecond();
-        return "%d시 %d분".formatted(hour, minute);
+        return Ut.time.diffFormat1Human(LocalDateTime.now(), modifyUnlockDate);
     }
 
     public RsData updateAttractionTypeCode(int attractiveTypeCode) {

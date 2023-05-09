@@ -1,4 +1,4 @@
-package com.ll.gramgram.base.rq;
+package com.ll.gramgram.rq;
 
 import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.member.entity.Member;

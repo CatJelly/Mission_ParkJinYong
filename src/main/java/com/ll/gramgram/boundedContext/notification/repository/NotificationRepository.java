@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
-    List<Notification> findByToInstaMember(InstaMember toInstaMember);
-    List<Notification> findByToInstaMemberOrFromInstaMember(InstaMember toInstaMember, InstaMember fromInstaMember);
+    List<Notification> findByToInstaMemberOrderByIdDesc(InstaMember toInstaMember);
+
+    List<Notification> findByToInstaMember_usernameOrderByIdDesc(String username);
+
+    int countByToInstaMemberAndReadDateIsNull(InstaMember instaMember);
 }
