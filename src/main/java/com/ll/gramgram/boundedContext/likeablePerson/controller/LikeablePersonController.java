@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -141,23 +142,37 @@ public class LikeablePersonController {
             }
 
             switch (sortCode) {
-                case 1:
-                    // likeablePeopleStream = likeablePeopleStream.sorted(??);
+                case 1: // 최신순
+                    likeablePeopleStream = likeablePeopleStream
+                            .sorted(Comparator.comparing(LikeablePerson::getCreateDate).reversed());
                     break;
-                case 2:
-                    // likeablePeopleStream = likeablePeopleStream.sorted(??);
+                case 2: // 날짜순
+                    likeablePeopleStream = likeablePeopleStream
+                            .sorted(Comparator.comparing(LikeablePerson::getCreateDate));
                     break;
-                case 3:
-                    // likeablePeopleStream = likeablePeopleStream.sorted(??);
+                case 3: // 인기 많은 순
+                    likeablePeopleStream = likeablePeopleStream
+                            .sorted((o1, o2) -> (int) (o1.getFromInstaMember().getLikes() - o2.getFromInstaMember().getLikes()));
                     break;
-                case 4:
-                    // likeablePeopleStream = likeablePeopleStream.sorted(??);
+                case 4: // 인기 적은 순
+                    likeablePeopleStream = likeablePeopleStream
+                            .sorted((o1, o2) -> (int) (o2.getFromInstaMember().getLikes() - o1.getFromInstaMember().getLikes()));
                     break;
-                case 5:
-                    // likeablePeopleStream = likeablePeopleStream.sorted(??);
+                case 5: // 성별순(여성 우선)
+                    Stream<LikeablePerson> femalePeople = likeablePersonService.genderSort(likeablePeopleStream, "W")
+                            .sorted(Comparator.comparing(LikeablePerson::getCreateDate).reversed());
+                    Stream<LikeablePerson> malePeople = likeablePersonService.genderSort(likeablePeopleStream, "M")
+                            .sorted(Comparator.comparing(LikeablePerson::getCreateDate).reversed());
+
+                    likeablePeopleStream = Stream.concat(femalePeople, malePeople);
                     break;
-                case 6:
-                    // likeablePeopleStream = likeablePeopleStream.sorted(??);
+                case 6: // 호감사유순
+                    Stream<LikeablePerson> appearancePeople = likeablePersonService.attractiveSort(likeablePeopleStream, 1);
+                    Stream<LikeablePerson> personalityPeople = likeablePersonService.attractiveSort(likeablePeopleStream, 2);
+                    Stream<LikeablePerson> abilityPeople = likeablePersonService.attractiveSort(likeablePeopleStream, 3);
+
+                    likeablePeopleStream = Stream.concat(appearancePeople, personalityPeople);
+                    likeablePeopleStream = Stream.concat(likeablePeopleStream, abilityPeople);
                     break;
 
             }

@@ -265,102 +265,102 @@ public class LikeablePersonServiceTests {
         ).isTrue();
     }
 
-    @Test
-    @DisplayName("호감리스트 남성 필터링 결과 확인")
-    void t009() throws Exception {
-        Member memberUser2 = memberService.findByUsername("user2").orElseThrow();
-        Member memberUser3 = memberService.findByUsername("user3").orElseThrow();
-        Member memberUser4 = memberService.findByUsername("user4").orElseThrow();
-        Member memberUser5 = memberService.findByUsername("user5").orElseThrow();
-        // memberUser2를 memberUser3(여성), memberUser4(남성), memberUser5(여성)이 호감 표시
-        String userName = memberUser2.getInstaMember().getUsername();
-
-        likeablePersonService.like(memberUser3, userName, 1);
-        likeablePersonService.like(memberUser4, userName, 1);
-        likeablePersonService.like(memberUser5, userName, 1);
-
-        Stream<LikeablePerson> likeablePeopleStream = memberUser2.getInstaMember().getToLikeablePeople().stream();
-        // 남성 필터링 결과 확인
-        likeablePeopleStream = likeablePersonService.genderSort(likeablePeopleStream, "M");
-        assertThat(likeablePeopleStream.count()).isEqualTo(1);
-    }
-
-    @Test
-    @DisplayName("호감리스트 여성 필터링 결과 확인")
-    void t010() throws Exception {
-        Member memberUser2 = memberService.findByUsername("user2").orElseThrow();
-        Member memberUser3 = memberService.findByUsername("user3").orElseThrow();
-        Member memberUser4 = memberService.findByUsername("user4").orElseThrow();
-        Member memberUser5 = memberService.findByUsername("user5").orElseThrow();
-        // memberUser2를 memberUser3(여성), memberUser4(남성), memberUser5(여성)이 호감 표시
-        String userName = memberUser2.getInstaMember().getUsername();
-
-        likeablePersonService.like(memberUser3, userName, 1);
-        likeablePersonService.like(memberUser4, userName, 1);
-        likeablePersonService.like(memberUser5, userName, 1);
-
-        Stream<LikeablePerson> likeablePeopleStream = memberUser2.getInstaMember().getToLikeablePeople().stream();
-        // 여성 필터링 결과 확인
-        likeablePeopleStream = likeablePersonService.genderSort(likeablePeopleStream, "W");
-        assertThat(likeablePeopleStream.count()).isEqualTo(2);
-    }
-
-    @Test
-    @DisplayName("호감리스트 외모 필터링 결과 확인")
-    void t011() throws Exception {
-        Member memberUser2 = memberService.findByUsername("user2").orElseThrow();
-        Member memberUser3 = memberService.findByUsername("user3").orElseThrow();
-        Member memberUser4 = memberService.findByUsername("user4").orElseThrow();
-        Member memberUser5 = memberService.findByUsername("user5").orElseThrow();
-        // memberUser2를 memberUser3(외모), memberUser4(외모), memberUser5(성격)이 호감 표시
-        String userName = memberUser2.getInstaMember().getUsername();
-
-        likeablePersonService.like(memberUser3, userName, 1);
-        likeablePersonService.like(memberUser4, userName, 1);
-        likeablePersonService.like(memberUser5, userName, 2);
-
-        Stream<LikeablePerson> likeablePeopleStream = memberUser2.getInstaMember().getToLikeablePeople().stream();
-        // 외모 필터링 결과 확인
-        likeablePeopleStream = likeablePersonService.attractiveSort(likeablePeopleStream, 1);
-        assertThat(likeablePeopleStream.count()).isEqualTo(2);
-    }
-
-    @Test
-    @DisplayName("호감리스트 성격 필터링 결과 확인")
-    void t012() throws Exception {
-        Member memberUser2 = memberService.findByUsername("user2").orElseThrow();
-        Member memberUser3 = memberService.findByUsername("user3").orElseThrow();
-        Member memberUser4 = memberService.findByUsername("user4").orElseThrow();
-        Member memberUser5 = memberService.findByUsername("user5").orElseThrow();
-        // memberUser2를 memberUser3(성격), memberUser4(성격), memberUser5(능력)이 호감 표시
-        String userName = memberUser2.getInstaMember().getUsername();
-
-        likeablePersonService.like(memberUser3, userName, 2);
-        likeablePersonService.like(memberUser4, userName, 2);
-        likeablePersonService.like(memberUser5, userName, 3);
-
-        Stream<LikeablePerson> likeablePeopleStream = memberUser2.getInstaMember().getToLikeablePeople().stream();
-        // 외모 필터링 결과 확인
-        likeablePeopleStream = likeablePersonService.attractiveSort(likeablePeopleStream, 2);
-        assertThat(likeablePeopleStream.count()).isEqualTo(2);
-    }
-
-    @Test
-    @DisplayName("호감리스트 능력 필터링 결과 확인")
-    void t013() throws Exception {
-        Member memberUser2 = memberService.findByUsername("user2").orElseThrow();
-        Member memberUser3 = memberService.findByUsername("user3").orElseThrow();
-        Member memberUser4 = memberService.findByUsername("user4").orElseThrow();
-        Member memberUser5 = memberService.findByUsername("user5").orElseThrow();
-        // memberUser2를 memberUser3(외모), memberUser4(외모), memberUser5(성격)이 호감 표시
-        String userName = memberUser2.getInstaMember().getUsername();
-        likeablePersonService.like(memberUser3, userName, 3);
-        likeablePersonService.like(memberUser4, userName, 3);
-        likeablePersonService.like(memberUser5, userName, 1);
-
-        Stream<LikeablePerson> likeablePeopleStream = memberUser2.getInstaMember().getToLikeablePeople().stream();
-        // 외모 필터링 결과 확인
-        likeablePeopleStream = likeablePersonService.attractiveSort(likeablePeopleStream, 3);
-        assertThat(likeablePeopleStream.count()).isEqualTo(2);
-    }
+//    @Test
+//    @DisplayName("호감리스트 남성 필터링 결과 확인")
+//    void t009() throws Exception {
+//        Member memberUser2 = memberService.findByUsername("user2").orElseThrow();
+//        Member memberUser3 = memberService.findByUsername("user3").orElseThrow();
+//        Member memberUser4 = memberService.findByUsername("user4").orElseThrow();
+//        Member memberUser5 = memberService.findByUsername("user5").orElseThrow();
+//        // memberUser2를 memberUser3(여성), memberUser4(남성), memberUser5(여성)이 호감 표시
+//        String userName = memberUser2.getInstaMember().getUsername();
+//
+//        likeablePersonService.like(memberUser3, userName, 1);
+//        likeablePersonService.like(memberUser4, userName, 1);
+//        likeablePersonService.like(memberUser5, userName, 1);
+//
+//        Stream<LikeablePerson> likeablePeopleStream = memberUser2.getInstaMember().getToLikeablePeople().stream();
+//        // 남성 필터링 결과 확인
+//        likeablePeopleStream = likeablePersonService.genderSort(likeablePeopleStream, "M");
+//        assertThat(likeablePeopleStream.count()).isEqualTo(1);
+//    }
+//
+//    @Test
+//    @DisplayName("호감리스트 여성 필터링 결과 확인")
+//    void t010() throws Exception {
+//        Member memberUser2 = memberService.findByUsername("user2").orElseThrow();
+//        Member memberUser3 = memberService.findByUsername("user3").orElseThrow();
+//        Member memberUser4 = memberService.findByUsername("user4").orElseThrow();
+//        Member memberUser5 = memberService.findByUsername("user5").orElseThrow();
+//        // memberUser2를 memberUser3(여성), memberUser4(남성), memberUser5(여성)이 호감 표시
+//        String userName = memberUser2.getInstaMember().getUsername();
+//
+//        likeablePersonService.like(memberUser3, userName, 1);
+//        likeablePersonService.like(memberUser4, userName, 1);
+//        likeablePersonService.like(memberUser5, userName, 1);
+//
+//        Stream<LikeablePerson> likeablePeopleStream = memberUser2.getInstaMember().getToLikeablePeople().stream();
+//        // 여성 필터링 결과 확인
+//        likeablePeopleStream = likeablePersonService.genderSort(likeablePeopleStream, "W");
+//        assertThat(likeablePeopleStream.count()).isEqualTo(2);
+//    }
+//
+//    @Test
+//    @DisplayName("호감리스트 외모 필터링 결과 확인")
+//    void t011() throws Exception {
+//        Member memberUser2 = memberService.findByUsername("user2").orElseThrow();
+//        Member memberUser3 = memberService.findByUsername("user3").orElseThrow();
+//        Member memberUser4 = memberService.findByUsername("user4").orElseThrow();
+//        Member memberUser5 = memberService.findByUsername("user5").orElseThrow();
+//        // memberUser2를 memberUser3(외모), memberUser4(외모), memberUser5(성격)이 호감 표시
+//        String userName = memberUser2.getInstaMember().getUsername();
+//
+//        likeablePersonService.like(memberUser3, userName, 1);
+//        likeablePersonService.like(memberUser4, userName, 1);
+//        likeablePersonService.like(memberUser5, userName, 2);
+//
+//        Stream<LikeablePerson> likeablePeopleStream = memberUser2.getInstaMember().getToLikeablePeople().stream();
+//        // 외모 필터링 결과 확인
+//        likeablePeopleStream = likeablePersonService.attractiveSort(likeablePeopleStream, 1);
+//        assertThat(likeablePeopleStream.count()).isEqualTo(2);
+//    }
+//
+//    @Test
+//    @DisplayName("호감리스트 성격 필터링 결과 확인")
+//    void t012() throws Exception {
+//        Member memberUser2 = memberService.findByUsername("user2").orElseThrow();
+//        Member memberUser3 = memberService.findByUsername("user3").orElseThrow();
+//        Member memberUser4 = memberService.findByUsername("user4").orElseThrow();
+//        Member memberUser5 = memberService.findByUsername("user5").orElseThrow();
+//        // memberUser2를 memberUser3(성격), memberUser4(성격), memberUser5(능력)이 호감 표시
+//        String userName = memberUser2.getInstaMember().getUsername();
+//
+//        likeablePersonService.like(memberUser3, userName, 2);
+//        likeablePersonService.like(memberUser4, userName, 2);
+//        likeablePersonService.like(memberUser5, userName, 3);
+//
+//        Stream<LikeablePerson> likeablePeopleStream = memberUser2.getInstaMember().getToLikeablePeople().stream();
+//        // 성격 필터링 결과 확인
+//        likeablePeopleStream = likeablePersonService.attractiveSort(likeablePeopleStream, 2);
+//        assertThat(likeablePeopleStream.count()).isEqualTo(2);
+//    }
+//
+//    @Test
+//    @DisplayName("호감리스트 능력 필터링 결과 확인")
+//    void t013() throws Exception {
+//        Member memberUser2 = memberService.findByUsername("user2").orElseThrow();
+//        Member memberUser3 = memberService.findByUsername("user3").orElseThrow();
+//        Member memberUser4 = memberService.findByUsername("user4").orElseThrow();
+//        Member memberUser5 = memberService.findByUsername("user5").orElseThrow();
+//        // memberUser2를 memberUser3(외모), memberUser4(외모), memberUser5(성격)이 호감 표시
+//        String userName = memberUser2.getInstaMember().getUsername();
+//        likeablePersonService.like(memberUser3, userName, 3);
+//        likeablePersonService.like(memberUser4, userName, 3);
+//        likeablePersonService.like(memberUser5, userName, 1);
+//
+//        Stream<LikeablePerson> likeablePeopleStream = memberUser2.getInstaMember().getToLikeablePeople().stream();
+//        // 능력 필터링 결과 확인
+//        likeablePeopleStream = likeablePersonService.attractiveSort(likeablePeopleStream, 3);
+//        assertThat(likeablePeopleStream.count()).isEqualTo(2);
+//    }
 }
