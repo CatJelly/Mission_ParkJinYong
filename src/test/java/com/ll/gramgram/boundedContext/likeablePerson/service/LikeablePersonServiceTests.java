@@ -263,4 +263,24 @@ public class LikeablePersonServiceTests {
                 likeablePersonToBts.getModifyUnlockDate().isAfter(coolTime)
         ).isTrue();
     }
+
+    @Test
+    @DisplayName("호감리스트 성별 필터링 결과 확인")
+    void t009() throws Exception {
+        Member memberUser2 = memberService.findByUsername("user2").orElseThrow();
+        Member memberUser3 = memberService.findByUsername("user3").orElseThrow();
+        Member memberUser4 = memberService.findByUsername("user4").orElseThrow();
+        Member memberUser5 = memberService.findByUsername("user5").orElseThrow();
+        // memberUser2를 memberUser3(여성), memberUser4(남성), memberUser5(여성)이 호감 표시
+        String userName = memberUser2.getInstaMember().getUsername();
+        likeablePersonService.like(memberUser3, userName, 1);
+        likeablePersonService.like(memberUser4, userName, 1);
+        likeablePersonService.like(memberUser5, userName, 1);
+
+        // 남성 필터링 결과 확인
+
+        // 여성 필터링 결과 확인
+
+
+    }
 }
