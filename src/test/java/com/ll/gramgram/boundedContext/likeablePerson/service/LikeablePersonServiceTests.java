@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -265,7 +266,7 @@ public class LikeablePersonServiceTests {
     }
 
     @Test
-    @DisplayName("호감리스트 성별 필터링 결과 확인")
+    @DisplayName("호감리스트 남성 필터링 결과 확인")
     void t009() throws Exception {
         Member memberUser2 = memberService.findByUsername("user2").orElseThrow();
         Member memberUser3 = memberService.findByUsername("user3").orElseThrow();
@@ -277,10 +278,28 @@ public class LikeablePersonServiceTests {
         likeablePersonService.like(memberUser4, userName, 1);
         likeablePersonService.like(memberUser5, userName, 1);
 
+        Stream<LikeablePerson> likeablePeopleStream = memberUser2.getInstaMember().getToLikeablePeople().stream();
         // 남성 필터링 결과 확인
+        likeablePeopleStream = likeablePersonService.genderSort(likeablePeopleStream, "M");
+        assertThat(likeablePeopleStream.count()).isEqualTo(1);
+    }
 
+    @Test
+    @DisplayName("호감리스트 여성 필터링 결과 확인")
+    void t010() throws Exception {
+        Member memberUser2 = memberService.findByUsername("user2").orElseThrow();
+        Member memberUser3 = memberService.findByUsername("user3").orElseThrow();
+        Member memberUser4 = memberService.findByUsername("user4").orElseThrow();
+        Member memberUser5 = memberService.findByUsername("user5").orElseThrow();
+        // memberUser2를 memberUser3(여성), memberUser4(남성), memberUser5(여성)이 호감 표시
+        String userName = memberUser2.getInstaMember().getUsername();
+        likeablePersonService.like(memberUser3, userName, 1);
+        likeablePersonService.like(memberUser4, userName, 1);
+        likeablePersonService.like(memberUser5, userName, 1);
+
+        Stream<LikeablePerson> likeablePeopleStream = memberUser2.getInstaMember().getToLikeablePeople().stream();
         // 여성 필터링 결과 확인
-
-
+        likeablePeopleStream = likeablePersonService.genderSort(likeablePeopleStream, "W");
+        assertThat(likeablePeopleStream.count()).isEqualTo(2);
     }
 }
