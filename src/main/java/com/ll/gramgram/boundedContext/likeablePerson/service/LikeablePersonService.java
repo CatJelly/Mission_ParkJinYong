@@ -230,4 +230,13 @@ public class LikeablePersonService {
                                 .equals(gender)
                 );
     }
+
+    public Stream<LikeablePerson> attractiveSort(Stream<LikeablePerson> likeablePeopleStream, int typeCode) {
+        return likeablePeopleStream
+                .filter(
+                        person -> Objects.equals(person
+                                .getAttractiveTypeCode()
+                                , typeCode)
+                );
+    }
 }
